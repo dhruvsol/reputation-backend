@@ -302,6 +302,7 @@ const getXPRecordFunction = async () => {
         // Selecting the first 3 records in XP by skill:
         maxRecords: 1000,
         view: 'XP by skill',
+        filterByFormula: `FIND("Member",{Person Type})`,
       })
       .eachPage(
         function page(records: any[], fetchNextPage: () => void) {
