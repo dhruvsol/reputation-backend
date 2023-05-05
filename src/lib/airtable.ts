@@ -339,6 +339,48 @@ const getXPRecordFunction = async () => {
           }
         },
       );
+    base('XP Summary')
+      .select({
+        // Selecting the first 3 records in XP by skill:
+        maxRecords: 1000,
+        view: 'XP by skill',
+        filterByFormula: `FIND("Contributor",{Person Type})`,
+      })
+      .eachPage(
+        function page(records: any[], fetchNextPage: () => void) {
+          records.forEach(function (record: { fields: any }) {
+            const fields = record.fields;
+            const name = fields['Name'] as string;
+            const personType = fields['Person Type'] as string;
+            const design = fields['Design XP'] || 0;
+            const dev = fields['Dev XP'] || 0;
+            const ops = fields['Ops XP'] || 0;
+            const strategy = fields['Strategy XP'] || 0;
+            const writing = fields['Writing XP'] || 0;
+            const video = fields['Video XP'] || 0;
+            const total = fields['Total XP'] || 0;
+
+            xps.push({
+              name: name,
+              person_type: personType,
+              total_xp: total || 0,
+              design: design || 0,
+              development: dev || 0,
+              operations: ops || 0,
+              strategy: strategy || 0,
+              writing: writing || 0,
+              videography: video || 0,
+            });
+          });
+          fetchNextPage();
+        },
+        function done(err: any) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        },
+      );
   } catch (error) {
     console.log('error', error);
     return error;
